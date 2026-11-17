@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MA39OUL - معقول | الفحص باين والضمان كاين</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json">
+</head>
+<body data-light="off" data-theme="dark" data-lang="ar">
+<audio id="lampAudio" src="TUL8TE - Garee2a Awy A COLORS SHOW.mp3" preload="auto"></audio>
+  <div class="ambient-glow"></div>
+  <canvas id="dustCanvas"></canvas>
+
+  <main class="scene">
+    <!-- المصباح -->
+<!-- المصباح ثابت في وسط الشاشة تماماً، والخيط وحده هو القابل للجر -->
+        <div class="lamp-wrapper" id="lampWrapperCenter" style="position: fixed; top: 12%; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; align-items: center;">
+            <svg class="lamp-svg" viewBox="0 0 260 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="metalDark" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#3a3f4b" />
+                        <stop offset="50%" stop-color="#1e2229" />
+                        <stop offset="100%" stop-color="#111318" />
+                    </linearGradient>
+                    <linearGradient id="goldAccent" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#b8860b" />
+                        <stop offset="50%" stop-color="#ffd700" />
+                        <stop offset="100%" stop-color="#aa771c" />
+                    </linearGradient>
+                    <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#e0f7fa" />
+                        <stop offset="60%" stop-color="#4dd0e1" />
+                        <stop offset="100%" stop-color="#08acc1" stop-opacity="0" />
+                    </radialGradient>
+                    <linearGradient id="lightCone" x1="0.2" y1="0" x2="0.8" y2="1">
+                        <stop offset="0%" stop-color="rgba(165, 243, 252, 0.4)" />
+                        <stop offset="60%" stop-color="rgba(253, 186, 116, 0.15)" />
+                        <stop offset="100%" stop-color="rgba(255, 170, 50, 0)" />
+                    </linearGradient>
+                </defs>
+
+                <polygon class="light-beam" points="145,128 260,350 40,350" fill="url(#lightCone)" />
+                <ellipse cx="75" cy="332" rx="48" ry="12" fill="#0b0d10" />
+                <path d="M35 330 C35 315, 115 315, 115 330 Z" fill="url(#metalDark)" />
+                <rect x="68" y="305" width="14" height="15" rx="3" fill="url(#goldAccent)" />
+                <line x1="75" y1="305" x2="45" y2="45" stroke="url(#metalDark)" stroke-width="10" stroke-linecap="round" />
+                <circle cx="45" cy="205" r="9" fill="url(#goldAccent)" />
+                <circle cx="45" cy="205" r="4" fill="#1e2229" />
+                <line x1="45" y1="45" x2="115" y2="105" stroke="url(#metalDark)" stroke-width="9" stroke-linecap="round" />
+                <circle cx="115" cy="105" r="8" fill="url(#goldAccent)" />
+
+                <circle class="bulb" cx="152" cy="128" r="16" fill="#2c303a" />
+                <circle class="bulb-aura" cx="152" cy="128" r="32" fill="url(#bulbGlow)" />
+
+                <path d="M110 95 C135 65, 185 85, 195 130 L118 148 C105 130, 102 110, 110 95 Z" fill="url(#metalDark)" />
+                <ellipse cx="156" cy="139" rx="40" ry="10" transform="rotate(-13 156 139)" fill="#161920" class="shade-back" />
+
+                <!-- الخيط بوحده هو اللي كيتجر بمرونة -->
+                <g class="cord-group" id="pullCordGroup" style="cursor: grab; touch-action: none;">
+                    <line id="dynamicCordLine" class="cord-line" x1="142" y1="142" x2="142" y2="235" stroke="#8d4f37" stroke-width="2.5" />
+                    <circle id="dynamicCordKnob" class="cord-knob" cx="142" cy="240" r="8" fill="url(#goldAccent)" />
+                    <rect x="120" y="140" width="45" height="110" fill="transparent" />
+                </g>
+            </svg>
+            <p class="hint-text" id="hintText">✨ جر الخيط بتدرج باش تشعل الضوء</p>
+        </div>
+
+    <!-- بطاقة تسجيل الدخول -->
+    <div class="card-container">
+      <div class="card-backlight"></div>
+      <div class="card-inner" id="cardInner">
+        
+        <div class="card-face card-front">
+          <div class="brand-logo">MA39OUL - معقول</div>
+          <div class="card-header">
+            <h1 data-i18n="welcomeTitle">مرحباً بك في<br>منصة معقول</h1>
+          </div>
+
+          <form class="auth-form" onsubmit="handleLogin(event)">
+            <div class="input-group">
+              <label data-i18n="emailLabel">البريد الإلكتروني</label>
+              <div class="glass-input">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" placeholder="example@ma39oul.ma" required />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="label-row">
+                <label data-i18n="passLabel">كلمة المرور</label>
+                <a href="#" class="forgot-link" data-i18n="forgotLink">نسيت كلمة المرور؟</a>
+              </div>
+              <div class="glass-input">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="loginPass" placeholder="أدخل كلمة المرور" required />
+                <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('loginPass', this)"></i>
+              </div>
+            </div>
+
+            <button type="submit" class="glass-submit-btn" data-i18n="loginBtn">تسجيل الدخول</button>
+          </form>
+
+          <div class="divider"><span data-i18n="orDivider">أو المتابعة عبر</span></div>
+
+          <div class="social-pill-buttons">
+            <button type="button" class="pill-btn"><i class="fa-brands fa-google" style="color: #ea4335;"></i> <span data-i18n="googleBtn">قوقل</span></button>
+            <button type="button" class="pill-btn"><i class="fa-brands fa-apple"></i> <span data-i18n="appleBtn">أبل</span></button>
+          </div>
+
+          <p class="switch-footer">
+            <span data-i18n="noAccount">ليس لديك حساب؟</span> <span onclick="flipCard(true)" data-i18n="createAccount">إنشاء حساب جديد</span>
+          </p>
+        </div>
+
+        <div class="card-face card-back">
+          <div class="brand-logo">MA39OUL - معقول</div>
+          <div class="card-header">
+            <h1 data-i18n="signupHeader">انضم إلى عائلة<br>معقول اليوم</h1>
+          </div>
+
+          <form class="auth-form" onsubmit="handleFormSubmit(event, 'Inscription')">
+            <div class="input-group">
+              <label data-i18n="emailLabel">البريد الإلكتروني</label>
+              <div class="glass-input">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" placeholder="example@ma39oul.ma" required />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label data-i18n="passLabel">كلمة المرور</label>
+              <div class="glass-input">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="signupPass" placeholder="أنشئ كلمة مرور قوية" required />
+                <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('signupPass', this)"></i>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label data-i18n="confirmPassLabel">تأكيد كلمة المرور</label>
+              <div class="glass-input">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="confirmPass" placeholder="أعد إدخال كلمة المرور" required />
+                <i class="fa-regular fa-eye toggle-pass" onclick="togglePassword('confirmPass', this)"></i>
+              </div>
+            </div>
+
+            <button type="submit" class="glass-submit-btn" data-i18n="signupBtn">إنشاء الحساب</button>
+          </form>
+
+          <p class="switch-footer">
+            <span data-i18n="hasAccount">لديك حساب بالفعل؟</span> <span onclick="flipCard(false)" data-i18n="loginSwitch">تسجيل الدخول</span>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- اللوحة الرئيسية -->
+    <div class="dashboard-container" id="dashboardContainer">
+      
+      <!-- شريط علوي مع زر الثلاث نقاط (...) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:0 4px 6px; border-bottom:1px solid rgba(255,255,255,0.1); position:relative;">
+        <span style="font-size:0.68rem; color:#34d399;" data-i18n="systemActive"><i class="fa-solid fa-circle"></i> النظام نشط</span>
+        
+        <div style="position:relative;">
+          <button onclick="toggleThreeDotsMenu()" style="background:rgba(245,158,11,0.2); border:1px solid #fbbf24; color:#fbbf24; width:28px; height:26px; border-radius:8px; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          
+          <!-- قائمة الثلاث نقاط المنبثقة -->
+          <div id="threeDotsMenuDropdown" style="display:none; position:absolute; left:0; top:32px; background:#062d22; border:1px solid #fbbf24; border-radius:12px; width:150px; z-index:99; box-shadow:0 10px 25px rgba(0,0,0,0.8); overflow:hidden;">
+            <button onclick="openTechPortalModal(); toggleThreeDotsMenu();" style="width:100%; background:none; border:none; color:#fff; padding:8px 12px; text-align:right; font-size:0.75rem; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-wrench" style="color:#fbbf24;"></i> <span data-i18n="techPortalMenu">بوابة التقنيين</span></button>
+            <button onclick="openSettingsModal(); toggleThreeDotsMenu();" style="width:100%; background:none; border:none; color:#fff; padding:8px 12px; text-align:right; font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-gear" style="color:#38bdf8;"></i> <span data-i18n="settingsMenu">الإعدادات</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pages-wrapper">
+        
+        <!-- صفحة 0: الرئيسية -->
+        <div class="tab-page active" id="page-0">
+          <div class="dashboard-header-card">
+            <div class="dashboard-top-icon"><i class="fa-solid fa-car-side"></i></div>
+            <h2>MA39OUL - معقول</h2>
+            <p class="dash-subtitle" data-i18n="slogan">الفحص باين والضمان كاين</p>
+            <div class="badge-row">
+              <span class="active-badge" data-i18n="onlineBadge"><i class="fa-solid fa-circle"></i> متصل الآن</span>
+              <span class="gold-badge" data-i18n="topBadge">★ رقم 1 في المغرب</span>
+            </div>
+            <h3 class="main-title-text" data-i18n="mainTitle">فحصها... قبل أن تشتري، وقبل أن تتعطل</h3>
+            <p class="desc-text" data-i18n="mainDesc">فحص دقيق للسيارات المستعملة، إصلاح بضمان رسمي، وإغاثة فورية تصلك أينما كنت في الدار البيضاء.</p>
+            <div class="exclusive-tag" data-i18n="exclusiveTag"><i class="fa-solid fa-location-dot"></i> خدمة حصرية في الدار البيضاء</div>
+
+            <div class="action-buttons-grid">
+              <button class="action-btn sos-btn" onclick="startRepairFlow()"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="repairBtn">طلب إصلاح سيارة</span></button>
+              <button class="action-btn book-btn" onclick="startBooking()"><i class="fa-regular fa-calendar-check"></i> <span data-i18n="inspectBtn">فحص سيارة مستعملة</span></button>
+            </div>
+          </div>
+
+          <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="stat-card"><span class="stat-num">4</span><span class="stat-label" data-i18n="stat1">فنيين معتمدين</span></div>
+            <div class="stat-card"><span class="stat-num">6</span><span class="stat-label" data-i18n="stat2">ورشات شريكة</span></div>
+            <div class="stat-card"><span class="stat-num">24/7</span><span class="stat-label" data-i18n="stat3">استجابة الطوارئ</span></div>
+          </div>
+
+          <div class="services-section">
+            <h3 data-i18n="servicesTitle">خدماتنا</h3>
+            <div class="service-item" onclick="startBooking()">
+              <div class="srv-info"><h4 data-i18n="srv1Title">فحص سيارة مستعملة</h4><p data-i18n="srv1Desc">فحص شامل ومتكامل - ابتداءً من 200 درهم</p></div>
+              <div class="srv-icon"><i class="fa-regular fa-calendar"></i></div>
+            </div>
+            <div class="service-item" onclick="startRepairFlow()">
+              <div class="srv-info"><h4 data-i18n="srv2Title">طلب إصلاح سيارة</h4><p data-i18n="srv2Desc">صف العطل وحدد موقعك بدقة - إغاثة سريعة</p></div>
+              <div class="srv-icon red-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            </div>
+            <div class="service-item" onclick="selectTab(2)">
+              <div class="srv-info"><h4 data-i18n="srv3Title">تتبع طلبك</h4><p data-i18n="srv3Desc">تابع حالة طلبك في الوقت الفعلي</p></div>
+              <div class="srv-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- صفحة 1: الحجز -->
+        <div class="tab-page" id="page-1">
+          <div id="bookingSuccessScreen" style="display:none; text-align:center; padding:12px 5px;">
+            <div style="width:55px; height:55px; background:rgba(16,185,129,0.2); border:2px solid #10b981; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; color:#34d399; font-size:1.5rem;">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <h2 style="font-size:1.2rem; font-weight:800; color:#fff; margin-bottom:3px;" data-i18n="successTitle">تم تأكيد الطلب بنجاح</h2>
+            <p style="font-size:0.72rem; color:#a7f3d0; margin-bottom:10px;" data-i18n="successDesc">تم إرسال الطلب للإدارة والتقنيين.</p>
+            
+            <div style="background:rgba(2,44,34,0.85); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:10px; margin-bottom:10px; text-align:right;">
+              <div style="font-size:0.68rem; color:#94a3b8; margin-bottom:2px;" data-i18n="trackingCodeLabel">رمز التتبع</div>
+              <div style="font-size:1.2rem; font-weight:900; color:#fbbf24; letter-spacing:1px;" id="successOrderId">MA39-9821</div>
+            </div>
+
+            <button class="action-btn" style="width:100%; background:rgba(255,255,255,0.1); color:#fff; font-size:0.78rem; height:36px; margin-bottom:4px;" onclick="selectTab(2)" data-i18n="goToTrackBtn">تتبع هذا الطلب ←</button>
+            <button class="action-btn" style="width:100%; background:transparent; color:#94a3b8; font-size:0.72rem; border:none;" onclick="resetBookingFlow()" data-i18n="newOrderBtn">طلب جديد</button>
+          </div>
+
+          <div id="bookingFormWrapper">
+            <div class="subpage-header" style="padding: 4px 0 8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="subpage-badge" style="color:#f59e0b;" id="stepHeaderTitle" data-i18n="bookingHeader">حجز الخدمة</span>
+                <button onclick="selectTab(0)" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1rem;"><i class="fa-solid fa-chevron-left"></i></button>
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:6px;">
+                <button type="button" id="tabBtnInspection" class="action-btn book-btn" style="height:32px; font-size:0.72rem;" onclick="switchServiceMode('inspection')"><i class="fa-solid fa-car"></i> <span data-i18n="inspectTab">فحص سيارة مستعملة</span></button>
+                <button type="button" id="tabBtnRepair" class="action-btn" style="height:32px; font-size:0.72rem; background:rgba(255,255,255,0.1); color:#fff;" onclick="switchServiceMode('repair')"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="repairTab">طلب إصلاح سيارة</span></button>
+              </div>
+            </div>
+
+            <div id="formInspectionSection">
+              <div class="booking-card-box">
+                <div class="box-top-title" data-i18n="carInfoTitle"><i class="fa-solid fa-car"></i> 1. معلومات السيارة</div>
+                
+                <label class="b-label" data-i18n="brandLabel">نوع السيارة</label>
+                <select class="dash-input" id="inspBrand" style="margin-bottom:6px;">
+                  <option value="" disabled selected data-i18n="selectBrand">اختر الماركة</option>
+                  <option value="Dacia">داسيا (Dacia)</option>
+                  <option value="Renault">رونو (Renault)</option>
+                  <option value="Volkswagen">فولكسفاغن (Volkswagen)</option>
+                </select>
+
+                <label class="b-label" data-i18n="modelLabel">موديل السيارة</label>
+                <input type="text" class="dash-input" id="inspModel" placeholder="مثال: Logan, Duster..." style="margin-bottom:6px;" />
+
+                <label class="b-label" data-i18n="yearLabel">سنة الصنع</label>
+                <input type="number" class="dash-input" id="inspYear" placeholder="مثال: 2020" style="margin-bottom:6px;" />
+
+                <label class="b-label" data-i18n="fuelLabel">نوع الوقود</label>
+                <!-- خيارات الوقود الأربعة المطلوبة بالحرف -->
+                <div class="fuel-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:5px; margin-bottom:8px;">
+                  <button type="button" class="fuel-btn" onclick="setFuelType(this, 'بنزين')" data-i18n="fuelBenzin">بنزين</button>
+                  <button type="button" class="fuel-btn active" onclick="setFuelType(this, 'ديزل')" data-i18n="fuelDiesel">ديزل</button>
+                  <button type="button" class="fuel-btn" onclick="setFuelType(this, 'إلكتريك')" data-i18n="fuelElectric">إلكتريك</button>
+                  <button type="button" class="fuel-btn" onclick="setFuelType(this, 'هايبريد')" data-i18n="fuelHybrid">هايبريد</button>
+                </div>
+
+                <div class="box-top-title" style="margin-top:8px;" data-i18n="locTitle"><i class="fa-solid fa-location-dot"></i> 2. الموقع في الدار البيضاء</div>
+                <select class="dash-input" id="inspDistrict" style="margin-bottom:6px;">
+                  <option value="" disabled selected data-i18n="selectDistrict">اختر الحي</option>
+                  <option value="المعاريف، الدار البيضاء">المعاريف (Maârif)</option>
+                  <option value="أنفا، الدار البيضاء">أنفا (Anfa)</option>
+                </select>
+
+                <div class="box-top-title" style="margin-top:8px;" data-i18n="clientInfoTitle"><i class="fa-regular fa-user"></i> 3. بيانات العميل</div>
+                <input type="text" class="dash-input" id="inspName" placeholder="الاسم الكامل" style="margin-bottom:6px;" />
+                <input type="tel" class="dash-input" id="inspPhone" placeholder="06XXXXXXXX" style="margin-bottom:8px;" />
+
+                <div style="background:rgba(16,185,129,0.1); border:1px dashed #10b981; border-radius:10px; padding:6px; text-align:center; margin-bottom:8px;">
+                  <label class="b-label" style="color:#34d399; font-weight:700;" data-i18n="photoLabel"><i class="fa-solid fa-camera"></i> صور السيارة المراد فحصها (إلزامي)</label>
+                  <input type="file" id="carPhotoInput" accept="image/*" class="dash-input" style="padding:4px; font-size:0.7rem;" onchange="previewCarPhoto(event)" />
+                  <div id="carPhotoPreview" style="margin-top:4px; font-size:0.68rem; color:#fbbf24; display:none;" data-i18n="photoAttached"><i class="fa-solid fa-check-circle"></i> تم إرفاق صورة السيارة بنجاح</div>
+                </div>
+
+                <button type="button" class="action-btn book-btn" style="width:100%; height:38px;" onclick="completeOrder('inspection')" data-i18n="submitInspectBtn">تأكيد وإرسال طلب الفحص</button>
+              </div>
+            </div>
+
+            <div id="formRepairSection" style="display:none;">
+              <div class="booking-card-box">
+                <div class="box-top-title" data-i18n="carInfoTitle"><i class="fa-solid fa-screwdriver-wrench"></i> 1. السيارة</div>
+                
+                <label class="b-label" data-i18n="brandLabel">نوع السيارة</label>
+                <select class="dash-input" id="repBrand" style="margin-bottom:6px;">
+                  <option value="" disabled selected data-i18n="selectBrand">اختر الماركة</option>
+                  <option value="Dacia">داسيا (Dacia)</option>
+                  <option value="Renault">رونو (Renault)</option>
+                </select>
+
+                <label class="b-label" data-i18n="modelLabel">موديل السيارة</label>
+                <input type="text" class="dash-input" id="repModel" placeholder="مثال: Logan, Duster..." style="margin-bottom:8px;" />
+
+                <div class="box-top-title" data-i18n="descErrorTitle"><i class="fa-solid fa-triangle-exclamation"></i> 2. وصف العطل</div>
+                <textarea class="dash-input" id="repDesc" placeholder="صف الأعطال بالتفصيل..." style="height:50px; padding-top:6px; margin-bottom:8px;"></textarea>
+
+                <div class="box-top-title" data-i18n="locTitle"><i class="fa-solid fa-location-dot"></i> 3. الموقع والتواصل</div>
+                <select class="dash-input" id="repDistrict" style="margin-bottom:6px;">
+                  <option value="" disabled selected data-i18n="selectDistrict">اختر الحي</option>
+                  <option value="المعاريف، الدار البيضاء">المعاريف (Maârif)</option>
+                </select>
+
+                <input type="text" class="dash-input" id="repName" placeholder="الاسم الكامل" style="margin-bottom:6px;" />
+                <input type="tel" class="dash-input" id="repPhone" placeholder="06XXXXXXXX" style="margin-bottom:8px;" />
+
+                <button type="button" class="action-btn book-btn" style="width:100%; height:38px; background:#ef4444;" onclick="completeOrder('repair')" data-i18n="submitRepairBtn"><i class="fa-solid fa-truck-fast"></i> أرسل طلب الإصلاح والإغاثة</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- صفحة 2: التتبع -->
+        <div class="tab-page" id="page-2">
+          <div class="subpage-header" style="padding:6px 0;">
+            <span class="subpage-badge" style="color:#38bdf8;" data-i18n="trackHeaderBadge">التتبع المباشر</span>
+            <h2 data-i18n="trackHeaderTitle">تتبع حالة طلبك</h2>
+          </div>
+          
+          <div class="track-box" style="padding:12px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(245,158,11,0.15); padding:6px 10px; border-radius:10px; margin-bottom:8px;">
+              <span style="color:#fbbf24; font-weight:700; font-size:0.78rem;" id="trackStatusBadge"><i class="fa-regular fa-clock"></i> <span data-i18n="pendingStatus">قيد الانتظار</span></span>
+              <span style="color:#fff; font-weight:800; font-size:0.8rem;" id="trackingOrderId">MA39-9821</span>
+            </div>
+
+            <!-- زر الانتقال للتقرير عند اكتمال الفحص -->
+            <div id="goToReportActionBox" style="display:none; margin-bottom:8px;">
+              <button onclick="selectTab(3)" class="action-btn book-btn" style="width:100%; background:#10b981; font-size:0.8rem; height:40px; animation: pulseBtn 1.5s infinite;"><i class="fa-solid fa-file-lines"></i> <span data-i18n="viewReportBtn">تم الفحص! عرض التقرير المتكامل ←</span></button>
+            </div>
+
+            <div style="background:rgba(2,44,34,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:8px; text-align:right; font-size:0.75rem; display:flex; flex-direction:column; gap:3px; margin-bottom:10px;">
+              <div><i class="fa-regular fa-user" style="color:#fbbf24;"></i> <strong data-i18n="nameLabelField">الاسم:</strong> <span id="trackName">-</span></div>
+              <div><i class="fa-solid fa-phone" style="color:#34d399;"></i> <strong data-i18n="phoneLabelField">الهاتف:</strong> <span id="trackPhoneNum">-</span></div>
+              <div><i class="fa-solid fa-location-dot" style="color:#38bdf8;"></i> <strong data-i18n="locLabelField">الموقع:</strong> <span id="trackDistrict">-</span></div>
+              <div><i class="fa-solid fa-car" style="color:#fbbf24;"></i> <strong data-i18n="carLabelField">السيارة:</strong> <span id="trackCar">-</span></div>
+              <div><i class="fa-solid fa-wrench" style="color:#a78bfa;"></i> <strong data-i18n="techLabelField">التقني المعين:</strong> <span id="assignedTechName" style="color:#34d399;" data-i18n="waitingTech">في انتظار تعيين تقني...</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- صفحة 3: التقرير -->
+        <div class="tab-page" id="page-3">
+          <div class="subpage-header" style="padding: 6px 0;">
+            <span class="subpage-badge" style="color:#a78bfa;"><i class="fa-regular fa-file-lines"></i> <span data-i18n="smartReportHeader">تقرير الفحص الذكي</span></span>
+            <h2 data-i18n="approvedReportsTitle">تقارير الفحص المعتمدة</h2>
+          </div>
+          
+          <div class="report-details-box" style="background:rgba(2,44,34,0.7); border:1px solid rgba(255,255,255,0.15); border-radius:18px; padding:14px; text-align:center;">
+            <div style="font-size:0.75rem; color:#a7f3d0; margin-bottom:6px;" data-i18n="healthScoreTitle">نسبة الصحة الإجمالية (Health Score)</div>
+            <div class="health-circle-badge" style="width:80px; height:80px; border:4px solid #10b981; border-radius:50%; margin:0 auto 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(16,185,129,0.1);">
+              <span style="font-size:1.3rem; font-weight:800; color:#fff;" id="reportHealthVal">88%</span>
+              <span style="font-size:0.6rem; color:#34d399;">Health</span>
+            </div>
+
+            <div class="metrics-list" style="display:flex; flex-direction:column; gap:8px; text-align:right; margin-top:8px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:2px;">
+                  <span style="color:#fff;" data-i18n="m1">الهيكل الخارجي</span><span style="color:#fbbf24;" id="valExtBody">92%</span>
+                </div>
+                <div style="height:5px; background:rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;"><div id="barExtBody" style="width:92%; height:100%; background:#fbbf24;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:2px;">
+                  <span style="color:#fff;" data-i18n="m2">الديكور الداخلي</span><span style="color:#fbbf24;" id="valIntDecor">88%</span>
+                </div>
+                <div style="height:5px; background:rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;"><div id="barIntDecor" style="width:88%; height:100%; background:#fbbf24;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:2px;">
+                  <span style="color:#fff;" data-i18n="m3">المحرك</span><span style="color:#fbbf24;" id="valEngine">90%</span>
+                </div>
+                <div style="height:5px; background:rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;"><div id="barEngine" style="width:90%; height:100%; background:#fbbf24;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:2px;">
+                  <span style="color:#fff;" data-i18n="m4">العجلات</span><span style="color:#fbbf24;" id="valWheels">85%</span>
+                </div>
+                <div style="height:5px; background:rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;"><div id="barWheels" style="width:85%; height:100%; background:#fbbf24;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:2px;">
+                  <span style="color:#fff;" data-i18n="m5">المكابح</span><span style="color:#fbbf24;" id="valBrakes">87%</span>
+                </div>
+                <div style="height:5px; background:rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;"><div id="barBrakes" style="width:87%; height:100%; background:#fbbf24;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:2px;">
+                  <span style="color:#fff;" data-i18n="m6">الكهرباء</span><span style="color:#fbbf24;" id="valElec">90%</span>
+                </div>
+                <div style="height:5px; background:rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;"><div id="barElec" style="width:90%; height:100%; background:#fbbf24;"></div></div>
+              </div>
+            </div>
+
+            <div style="margin-top:10px; background:rgba(0,0,0,0.3); padding:8px; border-radius:8px; text-align:right; font-size:0.72rem; color:#e2e8f0;">
+              <strong style="color:#fbbf24;" data-i18n="techNotesLabel"><i class="fa-solid fa-comment-dots"></i> ملاحظات التقني:</strong>
+              <p id="reportTechNotes" style="margin-top:3px; color:#a7f3d0;" data-i18n="noNotes">لا توجد ملاحظات إضافية.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- صفحة 4: الإدارة -->
+        <div class="tab-page" id="page-4">
+          <div id="adminLockScreen" style="text-align:center; padding:30px 15px;">
+            <div style="width:55px; height:55px; background:rgba(244,63,94,0.2); border:2px solid #f43f5e; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; color:#f43f5e; font-size:1.4rem;">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 style="font-size:1.1rem; font-weight:800; color:#fff; margin-bottom:4px;" data-i18n="adminHeader">قسم الإدارة</h2>
+            <p style="font-size:0.75rem; color:#a7f3d0; margin-bottom:14px;" data-i18n="adminPassPrompt">المرجو إدخال كلمة السر</p>
+
+            <input type="password" id="adminPasswordInput" class="dash-input" placeholder="★★★★" style="text-align:center; margin-bottom:10px; height:38px;" maxlength="4" />
+            <button class="action-btn book-btn" style="width:100%; background:#f43f5e; height:38px; font-size:0.8rem;" onclick="verifyAdminPassword()" data-i18n="adminLoginBtn">دخول الإدارة</button>
+          </div>
+
+          <div id="adminDashboardContent" style="display:none;">
+            <div class="subpage-header" style="padding: 6px 0;">
+              <span class="subpage-badge" style="color:#f43f5e;" data-i18n="adminDashboardBadge">لوحة الإدارة</span>
+              <h2>MA39OUL</h2>
+            </div>
+            
+            <div class="admin-subtabs">
+              <button class="admin-tab-btn active" onclick="switchAdminTab('orders')" data-i18n="tabOrders">الطلبات</button>
+              <button class="admin-tab-btn" onclick="switchAdminTab('techs')" data-i18n="tabTechs">التقنيون</button>
+              <button class="admin-tab-btn" onclick="switchAdminTab('shops')" data-i18n="tabShops">المحلات</button>
+            </div>
+
+            <div class="admin-section-content" id="adminOrders">
+              <div id="adminOrdersListContainer"></div>
+            </div>
+
+            <div class="admin-section-content" id="adminTechs" style="display:none;">
+              <div class="tech-top-bar" style="margin-bottom:6px;"><span class="online-count-badge"><i class="fa-solid fa-circle"></i> <span data-i18n="techCountText">4 تقنيين معتمدين</span></span></div>
+              <div class="tech-card"><div class="tech-header-row"><span class="status-badge online" data-i18n="onlineBadgeText">متصل</span><div class="tech-info-right"><h4>سفيان الفنون</h4><p data-i18n="readyStatus">جاهز للطلبات</p></div></div></div>
+              <div class="tech-card"><div class="tech-header-row"><span class="status-badge online" data-i18n="onlineBadgeText">متصل</span><div class="tech-info-right"><h4>بلال كاميليو</h4><p data-i18n="readyStatus">جاهز للطلبات</p></div></div></div>
+              <div class="tech-card"><div class="tech-header-row"><span class="status-badge online" data-i18n="onlineBadgeText">متصل</span><div class="tech-info-right"><h4>حميد الدياغنوستيك</h4><p data-i18n="readyStatus">جاهز للطلبات</p></div></div></div>
+              <div class="tech-card"><div class="tech-header-row"><span class="status-badge offline" data-i18n="offlineBadgeText">أوفلاين</span><div class="tech-info-right"><h4>عبد القدوس</h4><p data-i18n="notConnectedStatus">غير متصل</p></div></div></div>
+            </div>
+
+            <div class="admin-section-content" id="adminShops" style="display:none;">
+              <div class="tech-card"><div class="tech-header-row"><span class="status-badge online">نشط</span><div class="tech-info-right"><h4>Garage Atlas</h4><p>محمد الأطلسي | 0522000001</p></div></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- شريط التنقل السفلي -->
+      <div class="meniscus-wrapper" dir="rtl">
+        <div class="meniscus-bar" id="meniscusBar">
+          <div class="liquid-bead" id="liquidBead"></div>
+
+          <button type="button" class="m-tab active" data-index="0" data-color="#fbbf24" data-icon-color="#451a03" data-label="الرئيسية">
+            <i class="fa-solid fa-house"></i>
+            <span data-i18n="navHome">الرئيسية</span>
+          </button>
+
+          <button type="button" class="m-tab" data-index="1" data-color="#10b981" data-icon-color="#064e3b" data-label="حجز">
+            <i class="fa-regular fa-calendar"></i>
+            <span data-i18n="navBook">حجز</span>
+          </button>
+
+          <button type="button" class="m-tab" data-index="2" data-color="#38bdf8" data-icon-color="#083344" data-label="التتبع">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span data-i18n="navTrack">التتبع</span>
+          </button>
+
+          <button type="button" class="m-tab" data-index="3" data-color="#a78bfa" data-icon-color="#2e1065" data-label="التقرير">
+            <i class="fa-regular fa-file-lines"></i>
+            <span data-i18n="navReport">التقرير</span>
+          </button>
+
+          <button type="button" class="m-tab" data-index="4" data-color="#f43f5e" data-icon-color="#4c0519" data-label="الإدارة">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span data-i18n="navAdmin">الإدارة</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- نافذة بوابة التقنيين (معدلة لتتوقف عند: ادخل الكود الخاص بك) -->
+  <div id="techPortalModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+    <div style="background:rgba(6,45,34,0.96); border:2px solid #fbbf24; border-radius:20px; width:92%; max-width:370px; padding:18px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.8); max-height:90vh; overflow-y:auto;">
+      
+      <div id="techLoginScreen">
+        <div style="width:45px; height:45px; background:rgba(251,191,36,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; color:#fbbf24; font-size:1.2rem;">
+          <i class="fa-solid fa-wrench"></i>
+        </div>
+        <h3 style="color:#fff; font-size:1.05rem; margin-bottom:3px;" data-i18n="techPortalTitle">بوابة التقنيين</h3>
+        <!-- النص المطلوب بالحرف وتوقف بدون تفاصيل -->
+        <p style="color:#a7f3d0; font-size:0.7rem; margin-bottom:12px;" data-i18n="enterCodePrompt">ادخل الكود الخاص بك</p>
+        
+        <input type="password" id="techPassInput" class="dash-input" placeholder="••••" style="text-align:center; margin-bottom:10px; height:38px;" maxlength="3" />
+        <button class="action-btn book-btn" style="width:100%; margin-bottom:6px; height:38px; font-size:0.78rem;" onclick="verifyTechLogin()" data-i18n="enterBtn">دخول</button>
+        <button onclick="closeTechPortalModal()" style="background:transparent; border:none; color:#94a3b8; font-size:0.72rem; cursor:pointer;" data-i18n="closeBtn">إغلاق</button>
+      </div>
+
+      <div id="techDashboardScreen" style="display:none; text-align:right;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+          <div>
+            <h4 style="color:#fbbf24; font-size:0.9rem;" id="activeTechTitle">التقني</h4>
+            <span style="font-size:0.65rem; color:#34d399;"><i class="fa-solid fa-circle"></i> <span data-i18n="connectedReady">متصل وجاهز</span></span>
+          </div>
+          <button onclick="closeTechPortalModal()" style="background:rgba(239,68,68,0.2); border:none; color:#ef4444; width:26px; height:26px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <h5 style="color:#a7f3d0; font-size:0.78rem; margin-bottom:6px;" data-i18n="incomingOrders">الطلبات الواردة المتاحة:</h5>
+        <div id="techOrdersContainer"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- نافذة الإعدادات -->
+  <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+    <div style="background:rgba(6,45,34,0.95); border:2px solid #38bdf8; border-radius:20px; width:90%; max-width:340px; padding:18px; text-align:right; box-shadow:0 20px 40px rgba(0,0,0,0.8);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:6px;">
+        <h3 style="color:#38bdf8; font-size:1rem;"><i class="fa-solid fa-gear"></i> <span data-i18n="settingsTitle">إعدادات التطبيق</span></h3>
+        <button onclick="closeSettingsModal()" style="background:none; border:none; color:#ef4444; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label class="b-label" style="color:#cbd5e1; margin-bottom:4px;" data-i18n="langLabel">لغة التطبيق (Language)</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <button onclick="setAppLanguage('ar')" id="langBtnAr" class="action-btn book-btn" style="height:34px; font-size:0.75rem;">العربية (AR)</button>
+          <button onclick="setAppLanguage('fr')" id="langBtnFr" class="action-btn" style="height:34px; font-size:0.75rem; background:rgba(255,255,255,0.1);">Français (FR)</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label class="b-label" style="color:#cbd5e1; margin-bottom:4px;" data-i18n="themeLabel">وضع العرض (Theme Mode)</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <button onclick="setAppTheme('dark')" id="themeBtnDark" class="action-btn book-btn" style="height:34px; font-size:0.75rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="darkMode">مود الليل</span></button>
+          <button onclick="setAppTheme('light')" id="themeBtnLight" class="action-btn" style="height:34px; font-size:0.75rem; background:rgba(255,255,255,0.1);"><i class="fa-solid fa-sun"></i> <span data-i18n="lightMode">مود النهار</span></button>
+        </div>
+      </div>
+
+      <button onclick="closeSettingsModal()" class="action-btn book-btn" style="width:100%; height:36px; font-size:0.78rem;" data-i18n="saveCloseBtn">حفظ وإغلاق</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
